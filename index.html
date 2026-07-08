@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陈亚楠 | 产品运营</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          void: '#050505',
+          pearl: '#F0F0F0',
+          acid: '#CCFF00',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    --void: #050505;
+    --pearl: #F0F0F0;
+    --acid: #CCFF00;
+    --glass: rgba(255,255,255,0.03);
+    --glass-border: rgba(255,255,255,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: var(--void);
+    color: var(--pearl);
+    overflow-x: hidden;
+    cursor: none;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: rgba(204,255,0,0.3); border-radius: 2px; }
+
+  .noise {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
+
+  .orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(80px); pointer-events: none; z-index: 0;
+    animation: orbFloat 12s ease-in-out infinite;
+  }
+  .orb-1 { width: 500px; height: 500px; background: rgba(204,255,0,0.08); top: 10%; left: -10%; animation-delay: 0s; }
+  .orb-2 { width: 400px; height: 400px; background: rgba(0,255,200,0.05); top: 50%; right: -5%; animation-delay: -4s; }
+  .orb-3 { width: 300px; height: 300px; background: rgba(204,255,0,0.06); bottom: 10%; left: 30%; animation-delay: -8s; }
+  @keyframes orbFloat {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(30px,-40px) scale(1.1); }
+    66% { transform: translate(-20px,20px) scale(0.95); }
+  }
+
+  .cursor-ring {
+    position: fixed; width: 40px; height: 40px; border: 1px solid var(--acid);
+    border-radius: 50%; pointer-events: none; z-index: 10000;
+    transform: translate(-50%,-50%); transition: width 0.3s, height 0.3s, border-color 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-dot {
+    position: fixed; width: 6px; height: 6px; background: var(--acid);
+    border-radius: 50%; pointer-events: none; z-index: 10001;
+    transform: translate(-50%,-50%); mix-blend-mode: difference;
+  }
+  body:hover .cursor-ring { width: 60px; height: 60px; border-color: rgba(204,255,0,0.5); }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+  }
+  .glass:hover {
+    border-color: rgba(204,255,0,0.15);
+    transition: border-color 0.4s;
+  }
+
+  .nav-dots {
+    position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+    z-index: 50; display: flex; flex-direction: column; gap: 12px;
+  }
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); cursor: pointer;
+    transition: all 0.4s;
+  }
+  .nav-dot.active { background: var(--acid); box-shadow: 0 0 12px rgba(204,255,0,0.5); transform: scale(1.5); }
+
+  .top-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 12px 24px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.4s;
+  }
+  .top-nav.scrolled {
+    background: rgba(5,5,5,0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .top-nav-inner {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 999px;
+    padding: 6px 8px 6px 14px;
+    max-width: 900px;
+    width: 100%;
+  }
+  .top-nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .top-nav-brand img {
+    width: 32px; height: 32px; border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .top-nav-name { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.8); line-height: 1.2; }
+  .top-nav-tag { font-size: 0.7rem; color: rgba(255,255,255,0.3); line-height: 1.2; }
+  .top-nav-links {
+    display: flex; align-items: center; gap: 4px;
+    flex: 1; justify-content: center;
+  }
+  .top-nav-item {
+    padding: 8px 18px; border-radius: 999px;
+    font-size: 0.82rem; color: rgba(255,255,255,0.4);
+    cursor: pointer; transition: all 0.3s; white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .top-nav-item:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.03); }
+  .top-nav-item.active {
+    color: var(--acid);
+    background: rgba(204,255,0,0.08);
+    border-color: rgba(204,255,0,0.2);
+    box-shadow: 0 0 16px rgba(204,255,0,0.1);
+  }
+  .top-nav-actions {
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .lang-toggle {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 0.75rem; color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer; transition: all 0.3s;
+    user-select: none;
+  }
+  .lang-toggle:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+  .lang-toggle span { color: rgba(255,255,255,0.3); transition: all 0.3s; }
+  .lang-toggle .active-lang { color: var(--acid); font-weight: 600; }
+  .nav-action-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer; transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .nav-action-btn:hover { background: rgba(204,255,0,0.1); color: var(--acid); border-color: rgba(204,255,0,0.3); }
+
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .profile-layout { grid-template-columns: 7fr 5fr; }
+  }
+  .profile-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .profile-visual-img {
+    width: 100%;
+    max-width: 360px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .profile-visual-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .profile-card-float {
+    position: absolute;
+    background: #2a2a2a;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.9);
+    max-width: 190px;
+    line-height: 1.5;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .profile-card-float.acid {
+    border-color: rgba(204,255,0,0.25);
+    color: var(--acid);
+  }
+  .profile-card-float.top-right {
+    top: -10px;
+    right: -20px;
+  }
+  .profile-card-float.bottom-right {
+    bottom: 40px;
+    right: -30px;
+  }
+  .profile-card-float.bottom-left {
+    bottom: 20px;
+    left: -30px;
+    background: #252525;
+    border-color: rgba(255,255,255,0.2);
+  }
+  .profile-card-float .card-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: #3a3a3a;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px; font-size: 0.85rem;
+  }
+  .profile-card-float.acid .card-icon {
+    background: rgba(204,255,0,0.1); color: var(--acid);
+  }
+  .profile-btn-row {
+    display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px;
+  }
+  .profile-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 999px;
+    font-size: 0.85rem; font-weight: 500;
+    transition: all 0.3s; cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .profile-btn-primary {
+    background: var(--acid); color: #000;
+  }
+  .profile-btn-primary:hover {
+    background: #d4ff1a; transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(204,255,0,0.2);
+  }
+  .profile-btn-secondary {
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6);
+    border-color: rgba(255,255,255,0.1);
+  }
+  .profile-btn-secondary:hover {
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8);
+  }
+
+  .reveal { opacity: 0; transform: translateY(40px); }
+  .reveal.active { opacity: 1; transform: translateY(0); transition: all 0.8s cubic-bezier(0.16,1,0.3,1); }
+
+  .timeline { position: relative; padding-left: 40px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 12px; top: 0; bottom: 0;
+    width: 1px; background: linear-gradient(to bottom, rgba(204,255,0,0.3), rgba(255,255,255,0.05));
+  }
+  .tl-item { position: relative; margin-bottom: 48px; transition: all 0.5s; }
+  .tl-item::before {
+    content: ''; position: absolute; left: -34px; top: 6px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); border: 2px solid rgba(204,255,0,0.3);
+    transition: all 0.4s;
+  }
+  .tl-item:hover::before { background: var(--acid); border-color: var(--acid); box-shadow: 0 0 16px rgba(204,255,0,0.4); }
+  .tl-item:hover .tl-card { border-color: rgba(204,255,0,0.2); }
+  .tl-card { padding: 28px; transition: all 0.4s; }
+  .tl-num { font-size: 0.75rem; color: var(--acid); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .tl-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .tl-header h3 { font-size: 1.1rem; font-weight: 700; }
+  .tl-role { color: var(--acid); font-weight: 600; font-size: 0.9rem; }
+  .tl-date { font-size: 0.8rem; color: rgba(255,255,255,0.3); }
+  .tl-company { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+  .tl-bg { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 12px; padding: 12px 16px; background: rgba(204,255,0,0.03); border-radius: 8px; border-left: 2px solid rgba(204,255,0,0.2); }
+  .tl-actions { list-style: none; padding: 0; }
+  .tl-actions li { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.8; margin-bottom: 6px; padding-left: 16px; position: relative; }
+  .tl-actions li::before { content: '\2192'; position: absolute; left: 0; color: rgba(204,255,0,0.4); font-size: 0.7rem; }
+
+  .img-showcase { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+  .img-showcase img { width: 100%; height: auto; display: block; }
+  .annotation {
+    position: absolute; padding: 6px 14px; border-radius: 6px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;
+    background: rgba(5,5,5,0.85); backdrop-filter: blur(8px);
+    border: 1px solid rgba(204,255,0,0.4); color: var(--acid);
+    box-shadow: 0 0 20px rgba(204,255,0,0.1);
+    pointer-events: none; white-space: nowrap;
+  }
+  .annotation::before {
+    content: ''; position: absolute; width: 8px; height: 8px;
+    background: var(--acid); border-radius: 50%;
+    box-shadow: 0 0 10px rgba(204,255,0,0.6);
+  }
+  .ann-top-left { top: 16px; left: 16px; }
+  .ann-top-left::before { bottom: -14px; left: 50%; transform: translateX(-50%); }
+  .ann-bottom-center { bottom: 120px; left: 50%; transform: translateX(-50%); }
+  .ann-bottom-center::before { top: -14px; left: 50%; transform: translateX(-50%); }
+  .ann-right-mid { top: 50%; right: 16px; transform: translateY(-50%); }
+  .ann-right-mid::before { left: -14px; top: 50%; transform: translateY(-50%); }
+
+  .timeline-container:hover .tl-item { opacity: 0.3; filter: grayscale(0.6); }
+  .timeline-container:hover .tl-item:hover { opacity: 1; filter: grayscale(0); }
+
+  .edu-bg { position: relative; overflow: hidden; border-radius: 16px; }
+  .edu-bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.25; }
+  .edu-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(5,5,5,0.88) 0%, rgba(5,5,5,0.75) 12%, rgba(5,5,5,0.0) 22%, rgba(5,5,5,0.0) 78%, rgba(5,5,5,0.75) 88%, rgba(5,5,5,0.92) 100%); }
+  .edu-content { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; padding: 32px 40px 40px; }
+  .edu-content .edu-top { }
+  .edu-content .edu-bottom { }
+  .edu-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 680px;
+    margin: 24px auto 0;
+  }
+  .edu-gallery .img-showcase {
+    max-height: 200px;
+    aspect-ratio: 4 / 3;
+  }
+  .edu-gallery .img-showcase img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .edu-gallery-label {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--acid);
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  .edu-master-row {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 28px;
+    align-items: start;
+  }
+  .edu-master-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .edu-master-gallery .edu-master-date {
+    text-align: right;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+  .edu-master-gallery .img-showcase {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    max-height: 120px;
+  }
+  .edu-master-gallery .img-showcase img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .edu-awards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .edu-award-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    width: fit-content;
+  }
+  .edu-award-item.highlight {
+    background: rgba(204,255,0,0.08);
+    color: rgba(204,255,0,0.85);
+    border-color: rgba(204,255,0,0.2);
+  }
+  @media (max-width: 768px) {
+    .edu-master-row {
+      grid-template-columns: 1fr;
+    }
+    .edu-master-gallery {
+      flex-direction: row;
+      margin-top: 16px;
+    }
+    .edu-master-gallery .img-showcase {
+      flex: 1;
+      max-height: 100px;
+    }
+    .edu-master-gallery .edu-master-date { display: none; }
+    .edu-awards-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+  .compare-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .compare-col { display: flex; flex-direction: column; }
+  .compare-label { text-align: center; font-size: 0.75rem; color: var(--acid); margin-bottom: 8px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .compare-row .img-showcase {
+    max-height: 260px;
+  }
+  .compare-row .img-showcase img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .pdf-modal {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(5,5,5,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .pdf-modal.open { opacity: 1; pointer-events: auto; }
+  .pdf-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .pdf-modal-title {
+    font-size: 0.9rem; font-weight: 600; color: var(--acid);
+    letter-spacing: 0.1em;
+  }
+  .pdf-modal-close {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.3s;
+  }
+  .pdf-modal-close:hover { background: rgba(204,255,0,0.1); color: var(--acid); border-color: rgba(204,255,0,0.3); }
+  .pdf-modal-body {
+    flex: 1; overflow-y: auto; padding: 24px;
+    display: flex; justify-content: center;
+  }
+  .pdf-modal-body img {
+    max-width: 100%; height: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .pdf-modal-body .pdf-page-label {
+    text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.3);
+    margin-top: 8px; margin-bottom: 24px;
+  }
+
+  .pdf-entry {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 999px;
+    background: rgba(204,255,0,0.08);
+    border: 1px solid rgba(204,255,0,0.2);
+    color: var(--acid); font-size: 0.8rem; font-weight: 500;
+    cursor: pointer; transition: all 0.3s; white-space: nowrap;
+  }
+  .pdf-entry:hover {
+    background: rgba(204,255,0,0.15);
+    box-shadow: 0 0 20px rgba(204,255,0,0.1);
+    transform: translateY(-1px);
+  }
+  .pdf-entry svg { flex-shrink: 0; }
+
+  @media (max-width: 768px) {
+    .profile-layout { grid-template-columns: 1fr; gap: 32px; }
+    .profile-visual-img { max-width: 260px; }
+    .profile-card-float { display: none; }
+    .compare-row { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .compare-row .img-showcase { max-height: 140px; }
+    .edu-gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 100%; }
+    .edu-gallery .img-showcase { max-height: 140px; }
+    .timeline { padding-left: 28px; }
+    .tl-item::before { left: -24px; }
+    .nav-dots { display: none; }
+    .top-nav-inner { gap: 8px; padding: 6px 8px 6px 10px; }
+    .top-nav-brand img { width: 28px; height: 28px; }
+    .top-nav-name { font-size: 0.75rem; }
+    .top-nav-tag { display: none; }
+    .top-nav-item { padding: 6px 10px; font-size: 0.7rem; }
+    .top-nav-links { gap: 2px; }
+    .lang-toggle { display: none; }
+    .pdf-entry { font-size: 0.7rem; padding: 6px 10px; }
+    .pdf-modal-header { padding: 12px 16px; }
+    .pdf-modal-body { padding: 12px; }
+    body { cursor: auto; }
+    .cursor-ring, .cursor-dot { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<div id="app">
+<nav class="top-nav" id="topNav" :class="{scrolled: isScrolled}">
+  <div class="top-nav-inner">
+    <div class="top-nav-brand">
+      <img src="images/photo.jpg" alt="{{ t('profile.name') }}" />
+      <div>
+        <div class="top-nav-name">{{ t('profile.name') }}</div>
+        <div class="top-nav-tag">{{ t('profile.subtitle') }}</div>
+      </div>
+    </div>
+    <div class="top-nav-links">
+      <div class="top-nav-item" :class="{active: activeSection===0}" @click="scrollTo('profile')">Profile</div>
+      <div class="top-nav-item" :class="{active: activeSection===1}" @click="scrollTo('education')">Education</div>
+      <div class="top-nav-item" :class="{active: activeSection===2}" @click="scrollTo('experience')">Experience</div>
+      <div class="top-nav-item" :class="{active: activeSection===3}" @click="scrollTo('skills')">Skills</div>
+    </div>
+    <div class="top-nav-actions">
+      <div class="lang-toggle" @click="toggleLang">
+        <span :class="{'active-lang': lang==='en'}">EN</span>
+        <span>/</span>
+        <span :class="{'active-lang': lang==='zh'}">中</span>
+      </div>
+      <div class="nav-action-btn" @click="scrollTo('footer')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+    </div>
+  </div>
+</nav>
+
+  <div class="nav-dots">
+    <div class="nav-dot" :class="{active: activeSection===0}" @click="scrollTo('profile')"></div>
+    <div class="nav-dot" :class="{active: activeSection===1}" @click="scrollTo('education')"></div>
+    <div class="nav-dot" :class="{active: activeSection===2}" @click="scrollTo('experience')"></div>
+    <div class="nav-dot" :class="{active: activeSection===3}" @click="scrollTo('skills')"></div>
+  </div>
+
+  <section id="profile" class="min-h-screen flex items-center px-6 pt-32 pb-20 relative" ref="sec0">
+    <div class="max-w-6xl mx-auto w-full profile-layout">
+      <div class="reveal" ref="profileInfo">
+        <div class="text-[#CCFF00] text-xs uppercase tracking-[0.3em] mb-4">{{ t('profile.subtitle') }}</div>
+        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">{{ t('profile.name') }}</h1>
+        <p class="text-white/50 text-base leading-relaxed max-w-lg mb-8">
+          {{ t('profile.desc') }}
+        </p>
+        <div class="flex flex-wrap gap-3 mb-2">
+          <span class="glass px-4 py-1.5 text-sm text-white/60">{{ t('profile.tags.0') }}</span>
+          <span class="glass px-4 py-1.5 text-sm text-white/60">{{ t('profile.tags.1') }}</span>
+          <span class="glass px-4 py-1.5 text-sm text-[#CCFF00]/80">{{ t('profile.tags.2') }}</span>
+          <span class="glass px-4 py-1.5 text-sm text-[#CCFF00]/80">{{ t('profile.tags.3') }}</span>
+        </div>
+        <div class="profile-btn-row">
+          <a href="mailto:1492665203@qq.com" class="profile-btn profile-btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            {{ t('profile.btnEmail') }}
+          </a>
+          <span class="profile-btn profile-btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            {{ t('profile.btnPhone') }}
+          </span>
+        </div>
+      </div>
+      <div class="profile-visual reveal" ref="profilePhoto">
+        <div class="profile-visual-img">
+          <img src="images/photo.jpg" alt="{{ t('profile.name') }}" />
+        </div>
+        <div class="profile-card-float top-right acid">
+          <div class="card-icon">&#127891;</div>
+          <div>{{ t('profile.card1') }}</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.8);margin-top:4px;">{{ t('profile.card1sub') }}</div>
+        </div>
+        <div class="profile-card-float bottom-right">
+          <div class="card-icon">&#128200;</div>
+          <div>{{ t('profile.card2') }}</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.8);margin-top:4px;">{{ t('profile.card2sub') }}</div>
+        </div>
+        <div class="profile-card-float bottom-left">
+          <div class="card-icon">&#128640;</div>
+          <div>{{ t('profile.card3') }}</div>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.8);margin-top:4px;">{{ t('profile.card3sub') }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="py-24 px-6 relative" ref="sec1">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-[#CCFF00] text-xs uppercase tracking-[0.3em] mb-4 reveal">{{ t('education.sectionTitle') }}</div>
+      <h2 class="text-4xl md:text-5xl font-bold mb-12 reveal">{{ t('education.title') }}</h2>
+
+      <div class="glass p-8 md:p-10 reveal" style="min-height: 280px;">
+        <div class="flex flex-col gap-6">
+          <div class="edu-master-row">
+            <div class="edu-master-text">
+              <div class="flex flex-wrap items-baseline gap-3 mb-2">
+                <h3 class="text-xl font-bold">{{ t('education.school1') }}</h3>
+                <span class="text-[#CCFF00] text-sm">{{ t('education.tag1') }}</span>
+                <span class="text-white/30 text-sm">| {{ t('education.major1') }}</span>
+                <span class="text-white/30 text-sm">| {{ t('education.degree1') }}</span>
+              </div>
+              <div class="flex flex-wrap gap-4 text-sm text-white/60 mb-2">
+                <span>{{ t('education.gpa') }}</span>
+                <span class="text-[#CCFF00]">{{ t('education.rank') }}</span>
+              </div>
+              <div class="text-sm text-white/40 mb-4">{{ t('education.role') }}</div>
+
+              <div class="edu-awards-list">
+                <span v-for="(award, i) in t('education.awards')" :key="i" class="edu-award-item" :class="i < 2 ? 'highlight' : ''">{{ award }}</span>
+              </div>
+            </div>
+            <div class="edu-master-gallery">
+              <div class="edu-master-date">{{ t('education.date1') }}</div>
+              <div class="img-showcase">
+                <img src="images/zone2.jpg" alt="" />
+              </div>
+              <div class="img-showcase">
+                <img src="images/zone3.jpg" alt="" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10">
+            <div class="flex flex-wrap items-baseline gap-3">
+              <h3 class="text-lg font-semibold">{{ t('education.school2') }}</h3>
+              <span class="text-[#CCFF00] text-sm">{{ t('education.tag2') }}</span>
+              <span class="text-white/30 text-sm">| {{ t('education.major2') }}</span>
+              <span class="text-white/30 text-sm">| {{ t('education.degree2') }}</span>
+              <span class="text-white/30 text-sm ml-auto">{{ t('education.date2') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </section>
+
+  <section id="experience" class="py-24 px-6 relative" ref="sec2">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-[#CCFF00] text-xs uppercase tracking-[0.3em] mb-4 reveal">{{ t('experience.sectionTitle') }}</div>
+      <h2 class="text-4xl md:text-5xl font-bold mb-4 reveal">{{ t('experience.title') }}</h2>
+      <p class="text-white/30 text-sm mb-16 reveal">{{ t('experience.subtitle') }}</p>
+
+      <div class="timeline-container">
+        <div class="timeline">
+          <div class="tl-item reveal">
+            <div class="glass tl-card">
+              <div class="tl-num">{{ t('experience.bzhan.num') }}</div>
+              <div class="tl-header">
+                <h3>{{ t('experience.bzhan.company') }}</h3>
+                <div class="flex gap-3 items-center">
+                  <span class="tl-role">{{ t('experience.bzhan.role') }}</span>
+                  <span class="tl-date">{{ t('experience.bzhan.date') }}</span>
+                </div>
+              </div>
+              <div class="tl-company">{{ t('experience.bzhan.tagline') }}</div>
+
+              <div class="mb-6">
+                <div class="tl-bg" v-html="t('experience.bzhan.proj1.bg')"></div>
+                <div class="tl-bg" v-html="t('experience.bzhan.proj1.result')"></div>
+                <ul class="tl-actions">
+                  <li v-for="(action, i) in t('experience.bzhan.proj1.actions')" :key="i">{{ action }}</li>
+                </ul>
+              </div>
+
+              <div class="mb-6">
+                <div class="tl-bg" style="border-left-color: rgba(204,255,0,0.1);" v-html="t('experience.bzhan.proj2.bg')"></div>
+                <div class="tl-bg" style="border-left-color: rgba(204,255,0,0.1);" v-html="t('experience.bzhan.proj2.aigc')"></div>
+              </div>
+
+              <div class="mt-8 pt-6 border-t border-white/10">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="text-[#CCFF00] text-xs uppercase tracking-[0.2em]">{{ t('experience.bzhan.portfolio.label') }}</div>
+                  <div class="pdf-entry" @click="openPdfModal">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    {{ t('experience.bzhan.portfolio.entry') }}
+                  </div>
+                </div>
+                <h4 class="text-lg font-semibold mb-2">{{ t('experience.bzhan.portfolio.title') }}</h4>
+                <p class="text-white/30 text-sm mb-6">{{ t('experience.bzhan.portfolio.desc') }}</p>
+
+                <div class="compare-row">
+                  <div class="compare-col">
+                    <div class="compare-label">{{ t('experience.bzhan.compare.0') }}</div>
+                    <div class="img-showcase">
+                      <img src="images/hall_map.png" alt="{{ t('experience.bzhan.compare.0') }}" />
+                    </div>
+                  </div>
+                  <div class="compare-col">
+                    <div class="compare-label">{{ t('experience.bzhan.compare.1') }}</div>
+                    <div class="img-showcase">
+                      <img src="images/hall_characters.jpg" alt="{{ t('experience.bzhan.compare.1') }}" />
+                    </div>
+                  </div>
+                  <div class="compare-col">
+                    <div class="compare-label">{{ t('experience.bzhan.compare.2') }}</div>
+                    <div class="img-showcase">
+                      <img src="images/hall_sides.png" alt="{{ t('experience.bzhan.compare.2') }}" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item reveal">
+            <div class="glass tl-card">
+              <div class="tl-num">{{ t('experience.meituan.num') }}</div>
+              <div class="tl-header">
+                <h3>{{ t('experience.meituan.company') }}</h3>
+                <div class="flex gap-3 items-center">
+                  <span class="tl-role">{{ t('experience.meituan.role') }}</span>
+                  <span class="tl-date">{{ t('experience.meituan.date') }}</span>
+                </div>
+              </div>
+              <div class="tl-company">{{ t('experience.meituan.tagline') }}</div>
+              <div class="tl-bg" v-html="t('experience.meituan.proj.bg')"></div>
+              <div class="tl-bg" v-html="t('experience.meituan.proj.result')"></div>
+              <ul class="tl-actions">
+                <li v-for="(action, i) in t('experience.meituan.proj.actions')" :key="i">{{ action }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-item reveal">
+            <div class="glass tl-card">
+              <div class="tl-num">{{ t('experience.jiaoyou.num') }}</div>
+              <div class="tl-header">
+                <h3>{{ t('experience.jiaoyou.company') }}</h3>
+                <div class="flex gap-3 items-center">
+                  <span class="tl-role">{{ t('experience.jiaoyou.role') }}</span>
+                  <span class="tl-date">{{ t('experience.jiaoyou.date') }}</span>
+                </div>
+              </div>
+              <div class="tl-company">{{ t('experience.jiaoyou.tagline') }}</div>
+              <ul class="tl-actions">
+                <li v-for="(action, i) in t('experience.jiaoyou.actions')" :key="i">{{ action }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="py-24 px-6 relative" ref="sec3">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-[#CCFF00] text-xs uppercase tracking-[0.3em] mb-4 reveal">{{ t('skills.sectionTitle') }}</div>
+      <h2 class="text-4xl md:text-5xl font-bold mb-12 reveal">{{ t('skills.title') }}</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass p-6 reveal hover:border-[#CCFF00]/20 transition-all">
+          <h4 class="text-[#CCFF00] text-sm font-semibold mb-4 uppercase tracking-wider">{{ t('skills.cats.0') }}</h4>
+          <div class="flex flex-wrap gap-2">
+            <span v-for="(tag, i) in t('skills.ops')" :key="i" class="px-3 py-1.5 rounded-lg text-sm" :class="i < 3 ? 'bg-[#CCFF00]/10 text-[#CCFF00]/80 border border-[#CCFF00]/20' : 'bg-white/5 text-white/50 border border-white/10'">{{ tag }}</span>
+          </div>
+        </div>
+        <div class="glass p-6 reveal hover:border-[#CCFF00]/20 transition-all">
+          <h4 class="text-[#CCFF00] text-sm font-semibold mb-4 uppercase tracking-wider">{{ t('skills.cats.1') }}</h4>
+          <div class="flex flex-wrap gap-2">
+            <span v-for="(tag, i) in t('skills.data')" :key="i" class="px-3 py-1.5 rounded-lg text-sm" :class="i < 3 ? 'bg-[#CCFF00]/10 text-[#CCFF00]/80 border border-[#CCFF00]/20' : 'bg-white/5 text-white/50 border border-white/10'">{{ tag }}</span>
+          </div>
+        </div>
+        <div class="glass p-6 reveal hover:border-[#CCFF00]/20 transition-all">
+          <h4 class="text-[#CCFF00] text-sm font-semibold mb-4 uppercase tracking-wider">{{ t('skills.cats.2') }}</h4>
+          <div class="flex flex-wrap gap-2">
+            <span v-for="(tag, i) in t('skills.ai')" :key="i" class="px-3 py-1.5 rounded-lg text-sm" :class="i < 3 ? 'bg-[#CCFF00]/10 text-[#CCFF00]/80 border border-[#CCFF00]/20' : 'bg-white/5 text-white/50 border border-white/10'">{{ tag }}</span>
+          </div>
+        </div>
+        <div class="glass p-6 reveal hover:border-[#CCFF00]/20 transition-all">
+          <h4 class="text-[#CCFF00] text-sm font-semibold mb-4 uppercase tracking-wider">{{ t('skills.cats.3') }}</h4>
+          <div class="flex flex-wrap gap-2">
+            <span v-for="(tag, i) in t('skills.content')" :key="i" class="px-3 py-1.5 rounded-lg text-sm bg-white/5 text-white/50 border border-white/10">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer" class="py-16 px-6 border-t border-white/5">
+    <div class="max-w-5xl mx-auto text-center">
+      <p class="text-3xl font-bold mb-4">{{ t('footer.title') }}</p>
+      <div class="flex justify-center gap-8 text-white/40 text-sm">
+        <a href="mailto:1492665203@qq.com" class="hover:text-[#CCFF00] transition-colors">{{ t('footer.email') }}</a>
+        <span>{{ t('footer.phone') }}</span>
+      </div>
+      <p class="text-white/20 text-xs mt-8">{{ t('footer.name') }}</p>
+    </div>
+  </footer>
+
+  <!-- PDF详情模态框 -->
+  <div class="pdf-modal" :class="{open: pdfModalOpen}" @click="closePdfModalOnBackdrop($event)">
+    <div class="pdf-modal-header">
+      <div class="pdf-modal-title">{{ t('pdf.title') }}</div>
+      <div class="pdf-modal-close" @click="closePdfModal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <div class="pdf-modal-body">
+      <div style="max-width: 900px; width: 100%;">
+        <img src="images/pdf_pages/page_01.png" alt="Portfolio" />
+        <div class="pdf-page-label">{{ t('pdf.label') }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const { createApp, ref, onMounted } = Vue;
+
+createApp({
+  setup() {
+    const activeSection = ref(0);
+    const isScrolled = ref(false);
+    const pdfModalOpen = ref(false);
+    const lang = ref('zh');
+    const sections = ['profile','education','experience','skills'];
+
+    const toggleLang = () => {
+      lang.value = lang.value === 'zh' ? 'en' : 'zh';
+      document.documentElement.lang = lang.value === 'zh' ? 'zh-CN' : 'en';
+      document.title = lang.value === 'zh' ? '陈亚楠 | 产品运营' : 'Chen Yanan | Product Operations';
+    };
+
+    const openPdfModal = () => { pdfModalOpen.value = true; document.body.style.overflow = 'hidden'; };
+    const closePdfModal = () => { pdfModalOpen.value = false; document.body.style.overflow = ''; };
+    const closePdfModalOnBackdrop = (e) => { if (e.target === e.currentTarget) closePdfModal(); };
+
+    const initCursor = () => {
+      const ring = document.getElementById('cursorRing');
+      const dot = document.getElementById('cursorDot');
+      if (!ring || !dot || window.innerWidth < 768) return;
+      let mx = 0, my = 0, rx = 0, ry = 0;
+      document.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; });
+      const animate = () => {
+        rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+        requestAnimationFrame(animate);
+      };
+      animate();
+    };
+
+    const texts = {
+      zh: {
+        nav: { profile: 'Profile', education: 'Education', experience: 'Experience', skills: 'Skills' },
+        profile: {
+          subtitle: 'Product Operations', name: '陈亚楠',
+          desc: '深入参与百万级DAU教育产品(百词斩)游戏化社交体系0-1重构，以及美团到店「预订+团购」场景打通项目。具备C端产品全链路经验与B端商家策略设计能力，熟练运用漏斗分析、A/B测试与AIGC工具，驱动留存、渗透率及GMV增长，擅长将业务洞察转化为可复用的产品策略。',
+          tags: ['立即到岗', '实习时长 >= 6个月', '中共党员', '双一流'],
+          btnEmail: '1492665203@qq.com', btnPhone: '15536562212',
+          card1: '双一流 · 硕士在读', card1sub: 'GPA 3.96 / 专业第1',
+          card2: '渗透率 +21pp', card2sub: '百词斩一起背项目',
+          card3: '团购渗透率 +8.4pp', card3sub: '美团到店项目'
+        },
+        education: {
+          sectionTitle: 'Education', title: '教育背景',
+          school1: '成都理工大学', tag1: '（双一流）', major1: '风景园林（旅游规划方向）', degree1: '硕士在读', date1: '2024.09 - 2027.06',
+          gpa: 'GPA：3.96 / 4.0', rank: '专业排名：1 / 90', role: '职务：辅导员助理、档案室助管、班长',
+          awards: ['第十九届全国高校商业精英挑战赛 · 国家级一等奖', '第三届美丽中国创新设计大赛 · 国家级二等奖', '中国好创意数字艺术设计大赛 · 省级二等奖', '2024-2025学业奖学金 · 校级一等奖'],
+          school2: '成都理工大学', tag2: '（双一流）', major2: '环境设计（景观设计方向）', degree2: '学士', date2: '2018.09 - 2022.06',
+          gallery1: '全国高校商业精英挑战赛 · 国家级一等奖', gallery2: '学生干部 / 党员先锋'
+        },
+        experience: {
+          sectionTitle: 'Experience', title: '实习经历', subtitle: '鼠标悬停查看详情 · 百词斩展开作品集',
+          bzhan: {
+            num: '01 / 2026.02 - 2026.07', company: '百词斩', role: '产品运营实习生', date: '2026.02 - 2026.07',
+            tagline: '百万级DAU教育产品 · 社交体系游戏化重构',
+            proj1: {
+              title: '项目一：「一起背」社交体系游戏化版本升级迭代',
+              bg: '<strong class="text-white/80">项目一：「一起背」社交体系游戏化版本升级迭代</strong><br/><strong>背景：</strong>原大厅UI老化、核心入口过深、K12用户装扮炫耀需求缺乏场景承接；用户感知弱导致社交留存价值未能充分释放。核心目标是社交大厅从0到1重构，全面提升K12新用户渗透率与留存率。',
+              result: '<strong class="text-[#CCFF00]">阶段成果：</strong>6月30日平滑上线，新用户注册首周「一起背」渗透率由42%提升至63%（+21pp）。',
+              actions: [
+                '产品架构分层布局重构：负责社交大厅2.5D游戏化版本需求拆解，主导4轮PRD评审，基于用户分层与行为数据设计大厅分层布局',
+                '游戏化促学策略重构：重构铜板奖励逻辑，废弃无因果的地图捡币，改为学习结算清晰播报；创新"场景交互须做题触发"与"AI NPC外语对话绑定词书等级"策略',
+                'AI工具赋能存量资产迭代：深度使用Image2等AI生图工具批量生成新风格的存量资产',
+                '存量资产解耦重构：将存量单一结构资产升级为高炫耀特征多维复杂体系；协同研发落地"新老资产映射矩阵"与"Spine分组"解耦重构',
+                '黑白盒测试：参与上线前UI/交互走查与黑盒测试全流程，覆盖核心交互链路与设备兼容性修复'
+              ]
+            },
+            proj2: {
+              title: '项目二：独立负责「一起背」Tab的活动策划与用户增长',
+              bg: '<strong class="text-white/80">项目二：独立负责「一起背」Tab的活动策划与用户增长</strong><br/><strong>主题活动策划：</strong>负责小卖部主题系列装扮上新、组队打卡、铜板刮刮乐等运营活动落地。单期最高曝光100万+，点击转化率达51%，社交媒体正向评价。',
+              aigc: '<strong>多通道用户触达与AIGC赋能：</strong>负责Push、站内信、Banner多通道用户触达策略；深度应用AIGC工具规模化生产宣发图文；A/B测试推动整体点击率提升8%。'
+            },
+            portfolio: { label: 'Portfolio / 作品集', entry: '点击看详情', title: '百词斩「一起背」社交大厅 1.0', desc: '2D升级为2.5D游戏化社交场景，分层布局重构大厅架构' },
+            compare: ['大厅分层重构', '人物交互 & 铜板答题', '逻辑解析 & 活动区']
+          },
+          meituan: {
+            num: '02 / 2025.08 - 2025.11', company: '美团 - 到店事业群', role: '产品实习生（增长方向）', date: '2025.08 - 2025.11',
+            tagline: '到店业务 · "预订+团购"场景打通',
+            proj: {
+              title: '项目：「预订场景流量转化优化 — "预订+团购"场景打通」',
+              bg: '<strong class="text-white/80">项目：「预订场景流量转化优化 — "预订+团购"场景打通」</strong><br/><strong>背景：</strong>预订场景与团购场景长期割裂，用户预订后需跳转至团购页重新搜索，决策路径长达4-6步，预订成功页跳出率超70%。目标通过场景打通缩短转化路径，提升预订用户LTV。',
+              result: '<strong class="text-[#CCFF00]">阶段成果：</strong>转化路径从5步缩短至1步，操作成本降低80%；预订成功页跳出率72%->54%；团购渗透率6.8%->15.2%（+8.4pp）；点击率34%->56%（+22%）；客单价+24.6元；预估年化GMV增量超7000万元。',
+              actions: [
+                '数据诊断与漏斗分析：梳理预订->团购转化路径，定位关键流失节点（预订成功页->团购列表页转化率不足10%，团购详情页跳出率55%+），明确"缩短路径+精准推荐"优化方向',
+                '智能推荐策略设计：对接商家团购数据与预订时段数据，建立基于人数/时段/品类的动态推荐规则库；在预订成功页新增智能推荐模块，展示3款高匹配度团购',
+                '一键购买链路打通：设计"预订+团购一键绑定"功能，支持同步完成预订锁位与团购下单；针对团购售罄设计兜底推荐策略',
+                'A/B实验验证：上线4周A/B测试，覆盖用户8.2万人次；验证基于实时行为的推荐策略优于热门榜推荐（转化率高出5.3pp）',
+                '增长模型复用：沉淀"预订场景+智能推荐"组合策略，复制至排队取号页、订单详情页2个场景，累计带动到店业务团购渗透率整体提升3.2pp'
+              ]
+            }
+          },
+          jiaoyou: {
+            num: '03 / 2025.01 - 2025.03', company: '杭州交个朋友智慧科技有限公司', role: '运营实习生', date: '2025.01 - 2025.03',
+            tagline: '直播电商 · 数据驱动运营',
+            actions: [
+              '数据驱动运营决策：搭建直播实时数据监控看板，核心追踪在线人数、ROI、转化率、商品点击率等6项核心指标；通过实时数据分析累计推动30+余次现场策略调整，单场直播GMV提升300.7%',
+              '增长实验与快速迭代：参与设计A/B测试验证视觉方案对停留时长的影响，基于数据反馈迭代3版视觉方案，千次观看成交从1709元提升至3900元；沉淀突发事件SOP手册被团队采纳复用'
+            ]
+          }
+        },
+        skills: {
+          sectionTitle: 'Skills', title: '专业技能',
+          cats: ['运营工具', '数据分析', 'AI 提效', '内容创作'],
+          ops: ['Mastergo', 'Figma', 'Axure', 'Middle中台', 'SSS看板'],
+          data: ['Excel', 'SQL', '漏斗分析', 'A/B测试'],
+          ai: ['Claude', 'Codex', 'Gemini', 'Image2', 'Prompt工程'],
+          content: ['Photoshop', 'AI生图', '图文/视频', '文案创意']
+        },
+        footer: { title: 'Let\'s Connect', email: '1492665203@qq.com', phone: '15536562212', name: '陈亚楠 · 产品运营' },
+        pdf: { title: 'Portfolio / 作品集详情', label: 'Page 1 / 1' }
+      },
+      en: {
+        nav: { profile: 'Profile', education: 'Education', experience: 'Experience', skills: 'Skills' },
+        profile: {
+          subtitle: 'Product Operations', name: 'Chen Yanan',
+          desc: 'Deeply involved in the 0-to-1 gamified social system rebuild for a million-DAU ed-tech product (Baicizhan), and Meituan in-store "Booking + Group Buy" scenario integration. Full-stack C-end product experience with B-end merchant strategy design capabilities, proficient in funnel analysis, A/B testing, and AIGC tools to drive retention, penetration, and GMV growth, skilled at translating business insights into reusable product strategies.',
+          tags: ['Available Now', 'Internship >= 6 Months', 'CPC Member', 'Double First-Class'],
+          btnEmail: '1492665203@qq.com', btnPhone: '15536562212',
+          card1: 'Double First-Class · Master\'s', card1sub: 'GPA 3.96 / Rank #1',
+          card2: 'Penetration +21pp', card2sub: 'Baicizhan Yiqibei',
+          card3: 'Group-buy Penetration +8.4pp', card3sub: 'Meituan In-store'
+        },
+        education: {
+          sectionTitle: 'Education', title: 'Education',
+          school1: 'Chengdu University of Technology', tag1: '(Double First-Class)', major1: 'Landscape Architecture (Tourism Planning)', degree1: 'Master\'s · In Progress', date1: '2024.09 - 2027.06',
+          gpa: 'GPA: 3.96 / 4.0', rank: 'Major Rank: 1 / 90', role: 'Roles: Counselor Assistant, Archive Assistant, Class Monitor',
+          awards: ['19th National University Business Elite Challenge · National 1st Prize', '3rd Beautiful China Innovation Design Contest · National 2nd Prize', 'China Creative Digital Art Competition · Provincial 2nd Prize', '2024-2025 Academic Scholarship · 1st Prize'],
+          school2: 'Chengdu University of Technology', tag2: '(Double First-Class)', major2: 'Environmental Design (Landscape Design)', degree2: 'Bachelor', date2: '2018.09 - 2022.06',
+          gallery1: 'National Business Elite Challenge · 1st Prize', gallery2: 'Student Leader / CPC Pioneer'
+        },
+        experience: {
+          sectionTitle: 'Experience', title: 'Experience', subtitle: 'Hover for details · Baicizhan expands portfolio',
+          bzhan: {
+            num: '01 / 2026.02 - 2026.07', company: 'Baicizhan', role: 'Product Operations Intern', date: '2026.02 - 2026.07',
+            tagline: 'Million-DAU Ed-Tech · Gamified Social Rebuild',
+            proj1: {
+              title: 'Project 1: "Yiqibei" Social System Gamification Upgrade',
+              bg: '<strong class="text-white/80">Project 1: "Yiqibei" Social System Gamification Upgrade</strong><br/><strong>Background:</strong> The original hall UI was outdated, core entry was too deep, and K12 users lacked a stage for showing off their avatars. Weak user perception led to underutilized social retention value. The goal was to rebuild the social hall from 0 to 1, improving K12 new-user penetration and retention.',
+              result: '<strong class="text-[#CCFF00]">Results:</strong> Smooth launch on June 30. New-user first-week "Yiqibei" penetration increased from 42% to 63% (+21pp).',
+              actions: [
+                'Product Architecture Redesign: Led the 2.5D gamified social hall requirement breakdown, chaired 4 PRD reviews, and designed a layered hall layout based on user segmentation and behavioral data.',
+                'Gamified Learning Strategy Rebuild: Restructured copper coin reward logic, scrapped the causeless map coin collection, and replaced it with clear learning settlement broadcasts. Innovated "scene interaction triggers via quiz" and "AI NPC foreign-language dialogue bound to word-book level."',
+                'AI Tools for Legacy Asset Iteration: Deeply used Image2 and other AI image-generation tools to batch-produce new-style legacy assets.',
+                'Legacy Asset Decoupling Rebuild: Upgraded single-structure legacy assets into a high-ostentation multi-dimensional complex system; collaborated with R&D to deliver a "new-old asset mapping matrix" and "Spine grouping" decoupling rebuild.',
+                'Black & White Box Testing: Participated in pre-launch UI/interaction walkthrough and full black-box testing, covering core interaction chains and device compatibility fixes.'
+              ]
+            },
+            proj2: {
+              title: 'Project 2: Independently responsible for "Yiqibei" Tab event planning and user growth',
+              bg: '<strong class="text-white/80">Project 2: Independently responsible for "Yiqibei" Tab event planning and user growth</strong><br/><strong>Event Planning:</strong> Led the deployment of themed shop avatar launches, team check-ins, and copper coin scratch-off events. Single-phase peak exposure 1M+, click-through rate 51%, positive social media feedback.',
+              aigc: '<strong>Multi-channel User Reach & AIGC Empowerment:</strong> Responsible for Push, in-app messages, and Banner multi-channel user reach strategies; deeply applied AIGC tools for scalable production of promotional images and copy; A/B testing drove overall CTR up 8%.'
+            },
+            portfolio: { label: 'Portfolio', entry: 'View Details', title: 'Baicizhan "Yiqibei" Social Hall 1.0', desc: '2D upgraded to 2.5D gamified social scene, layered layout rebuild of hall architecture' },
+            compare: ['Hall Layer Rebuild', 'Character Interaction & Quiz', 'Logic Analysis & Activity Zones']
+          },
+          meituan: {
+            num: '02 / 2025.08 - 2025.11', company: 'Meituan - In-store Business Group', role: 'Product Intern (Growth)', date: '2025.08 - 2025.11',
+            tagline: 'In-store Business · "Booking + Group Buy" Integration',
+            proj: {
+              title: 'Project: "Booking Scenario Traffic Conversion Optimization — Booking + Group Buy Integration"',
+              bg: '<strong class="text-white/80">Project: "Booking Scenario Traffic Conversion Optimization — Booking + Group Buy Integration"</strong><br/><strong>Background:</strong> Booking and group-buy scenarios were long isolated; users had to jump to the group-buy page and re-search after booking, with a 4-6 step decision path and a booking success page bounce rate over 70%. The goal was to shorten the conversion path and improve booking user LTV.',
+              result: '<strong class="text-[#CCFF00]">Results:</strong> Conversion path shortened from 5 steps to 1 step, operation cost reduced by 80%; booking success page bounce rate 72% -> 54%; group-buy penetration 6.8% -> 15.2% (+8.4pp); CTR 34% -> 56% (+22%); AOV +24.6 RMB; estimated annual GMV increase over 70 million RMB.',
+              actions: [
+                'Data Diagnosis & Funnel Analysis: Mapped the booking -> group-buy conversion path, identified key churn nodes (booking success page -> group-buy list page conversion < 10%, group-buy detail page bounce rate 55%+), and clarified the optimization direction of "shorten path + precise recommendation."',
+                'Smart Recommendation Strategy Design: Connected merchant group-buy data and booking time data, established a dynamic recommendation rule base based on party size / time slot / category; added a smart recommendation module on the booking success page showing 3 high-match group-buy options.',
+                'One-click Purchase Path Integration: Designed the "booking + group-buy one-click binding" feature, supporting simultaneous booking lock-in and group-buy order placement; designed a fallback recommendation strategy for sold-out group-buy items.',
+                'A/B Experiment Verification: Launched 4-week A/B test covering 82,000 users; verified that real-time behavior-based recommendation outperformed the hot-list recommendation (conversion rate +5.3pp).',
+                'Growth Model Reuse: Precipitated the "booking scenario + smart recommendation" combo strategy, replicated to the queue page and order detail page 2 scenarios, driving overall in-store business group-buy penetration up 3.2pp.'
+              ]
+            }
+          },
+          jiaoyou: {
+            num: '03 / 2025.01 - 2025.03', company: 'Hangzhou Jiaoge Pengyou Tech', role: 'Operations Intern', date: '2025.01 - 2025.03',
+            tagline: 'Live-stream E-commerce · Data-driven Operations',
+            actions: [
+              'Data-driven Operations: Built a live-stream real-time data monitoring dashboard, tracking 6 core metrics (online users, ROI, conversion rate, product CTR, etc.); through real-time data analysis, pushed 30+ on-site strategy adjustments, single-stream GMV up 300.7%.',
+              'Growth Experiment & Rapid Iteration: Participated in A/B test design to verify visual scheme impact on dwell time; iterated 3 visual versions based on data feedback, per-thousand-view transaction from 1,709 to 3,900 RMB; documented emergency SOP handbook adopted by the team.'
+            ]
+          }
+        },
+        skills: {
+          sectionTitle: 'Skills', title: 'Skills',
+          cats: ['Operations Tools', 'Data Analysis', 'AI Efficiency', 'Content Creation'],
+          ops: ['Mastergo', 'Figma', 'Axure', 'Middle Platform', 'SSS Dashboard'],
+          data: ['Excel', 'SQL', 'Funnel Analysis', 'A/B Testing'],
+          ai: ['Claude', 'Codex', 'Gemini', 'Image2', 'Prompt Engineering'],
+          content: ['Photoshop', 'AI Image Gen', 'Image/Video', 'Copywriting']
+        },
+        footer: { title: 'Let\'s Connect', email: '1492665203@qq.com', phone: '15536562212', name: 'Chen Yanan · Product Operations' },
+        pdf: { title: 'Portfolio Details', label: 'Page 1 / 1' }
+      }
+    };
+
+    const t = (path) => {
+      const keys = path.split('.');
+      let val = texts[lang.value];
+      for (const k of keys) {
+        if (Array.isArray(val)) {
+          const idx = parseInt(k);
+          if (!isNaN(idx) && val[idx] !== undefined) val = val[idx];
+          else return path;
+        } else if (val && val[k] !== undefined) {
+          val = val[k];
+        } else {
+          return path;
+        }
+      }
+      return val;
+    };
+
+    const initScrollSpy = () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = sections.indexOf(entry.target.id);
+            if (idx !== -1) activeSection.value = idx;
+            entry.target.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+          }
+        });
+      }, { threshold: 0.2 });
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+    };
+
+    const scrollTo = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const navHeight = document.getElementById('topNav')?.offsetHeight || 70;
+      const target = el.getBoundingClientRect().top + window.scrollY - navHeight - 20;
+      window.scrollTo({ top: target, behavior: 'smooth' });
+    };
+
+    const initNavScroll = () => {
+      const onScroll = () => {
+        isScrolled.value = window.scrollY > 60;
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    };
+
+    const initGSAP = () => {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('#profile h1', { opacity: 0, y: 60, duration: 1.2, ease: 'power4.out', delay: 0.3 });
+      gsap.from('.orb', { opacity: 0, scale: 0.5, duration: 2, stagger: 0.3, ease: 'power2.out' });
+    };
+
+    onMounted(() => {
+      document.documentElement.lang = 'zh-CN';
+      document.title = lang.value === 'zh' ? '陈亚楠 | 产品运营' : 'Chen Yanan | Product Operations';
+      initCursor();
+      initScrollSpy();
+      initNavScroll();
+      initGSAP();
+      // Fallback: ensure all reveal elements become visible after 1.5s
+      setTimeout(() => {
+        document.querySelectorAll('.reveal').forEach(el => {
+          if (!el.classList.contains('active')) el.classList.add('active');
+        });
+      }, 1500);
+    });
+
+    return { activeSection, isScrolled, pdfModalOpen, lang, toggleLang, scrollTo, openPdfModal, closePdfModal, closePdfModalOnBackdrop, t };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
