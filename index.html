@@ -677,6 +677,36 @@
         <div class="timeline">
           <div class="tl-item reveal">
             <div class="glass tl-card">
+              <div class="tl-num">{{ t('experience.hikvision.num') }}</div>
+              <div class="tl-header">
+                <h3>{{ t('experience.hikvision.company') }}</h3>
+                <div class="flex gap-3 items-center">
+                  <span class="tl-role">{{ t('experience.hikvision.role') }}</span>
+                  <span class="tl-date">{{ t('experience.hikvision.date') }}</span>
+                </div>
+              </div>
+              <div class="tl-company">{{ t('experience.hikvision.tagline') }}</div>
+
+              <div class="mb-6">
+                <div class="tl-bg" v-html="t('experience.hikvision.proj1.bg')"></div>
+                <div class="tl-bg" v-html="t('experience.hikvision.proj1.result')"></div>
+                <ul class="tl-actions">
+                  <li v-for="(action, i) in t('experience.hikvision.proj1.actions')" :key="i">{{ action }}</li>
+                </ul>
+              </div>
+
+              <div>
+                <div class="tl-bg" style="border-left-color: rgba(204,255,0,0.1);" v-html="t('experience.hikvision.proj2.bg')"></div>
+                <div class="tl-bg" style="border-left-color: rgba(204,255,0,0.1);" v-html="t('experience.hikvision.proj2.result')"></div>
+                <ul class="tl-actions">
+                  <li v-for="(action, i) in t('experience.hikvision.proj2.actions')" :key="i">{{ action }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item reveal">
+            <div class="glass tl-card">
               <div class="tl-num">{{ t('experience.bzhan.num') }}</div>
               <div class="tl-header">
                 <h3>{{ t('experience.bzhan.company') }}</h3>
@@ -895,8 +925,32 @@ createApp({
         },
         experience: {
           sectionTitle: 'Experience', title: '实习经历', subtitle: '鼠标悬停查看详情 · 百词斩展开作品集',
+          hikvision: {
+            num: '01 / 2026.07 - 至今', company: '海康威视 HIKVISION', role: 'AI产品经理实习生', date: '2026.07 - 至今',
+            tagline: '多模态AI · IoT智能体平台 · 智能工牌',
+            proj1: {
+              title: '项目一：参与设计IoT智能体平台搭建',
+              bg: '<strong class="text-white/80">项目一：参与设计IoT智能体平台搭建</strong><br/><strong>背景：</strong>深入零售、安防、餐饮、宠物等行业场景，通过定义数标规则、写Prompt评测智能体，调试多模态大模型，参与真实客户的场景交付。',
+              result: '<strong class="text-[#CCFF00]">阶段成果：</strong>沉淀覆盖3大行业、100+边界案例的标注标准与Prompt调优SOP；输出第三方模型效果与适用性报告。',
+              actions: [
+                '拆解安防/零售/餐饮等行业需求与边界规则，制定包含难例样本库与一致性抽检标准的标注规范',
+                '基于识别率、召回率、F1-score及推理时延等维度评测5款多模态模型，深度分析误检、漏检案例，推动模型在特定场景下识别率从82%提升至89%',
+                '围绕评测结论协同算法、研发及交付团队推进项目落地'
+              ]
+            },
+            proj2: {
+              title: '项目二：参与AI工牌录音0-1项目落地',
+              bg: '<strong class="text-white/80">项目二：参与AI工牌录音0-1项目落地</strong><br/><strong>背景：</strong>面向零售、餐饮等线下服务场景，根据不同客户需求，通过“语音转写+大模型分析”将工牌录音转化为结构化业务信息，辅助服务质检与业务复盘。',
+              result: '<strong class="text-[#CCFF00]">阶段成果：</strong>完成10+客户需求、录音样本、Prompt模板及评测指标标准化沉淀，输出录音分析效果报告支持产品迭代。',
+              actions: [
+                '开展客户深度访谈与需求拆解，输出涵盖5大核心功能模块的PRD（30+页）及高保真原型',
+                '搭建500+条测试集与评测体系，围绕转写准确率、信息提取准确率、结果完整性及响应时延开展模型A/B测试',
+                '分析错识、漏识与幻觉案例，迭代Prompt及结构化输出模板，协同算法、研发和交付团队推进落地'
+              ]
+            }
+          },
           bzhan: {
-            num: '01 / 2026.02 - 2026.07', company: '百词斩', role: '产品运营实习生', date: '2026.02 - 2026.07',
+            num: '02 / 2026.02 - 2026.07', company: '百词斩', role: '产品运营实习生', date: '2026.02 - 2026.07',
             tagline: '百万级DAU教育产品 · 社交体系游戏化重构',
             proj1: {
               title: '项目一：「一起背」社交体系游戏化版本升级迭代',
@@ -919,7 +973,7 @@ createApp({
             compare: ['大厅分层重构', '人物交互 & 铜板答题', '逻辑解析 & 活动区']
           },
           meituan: {
-            num: '02 / 2025.08 - 2025.11', company: '美团 - 到店事业群', role: '产品实习生（增长方向）', date: '2025.08 - 2025.11',
+            num: '03 / 2025.08 - 2025.11', company: '美团 - 到店事业群', role: '产品实习生（增长方向）', date: '2025.08 - 2025.11',
             tagline: '到店业务 · "预订+团购"场景打通',
             proj: {
               title: '项目：「预订场景流量转化优化 — "预订+团购"场景打通」',
@@ -935,7 +989,7 @@ createApp({
             }
           },
           jiaoyou: {
-            num: '03 / 2025.01 - 2025.03', company: '杭州交个朋友智慧科技有限公司', role: '运营实习生', date: '2025.01 - 2025.03',
+            num: '04 / 2025.01 - 2025.03', company: '杭州交个朋友智慧科技有限公司', role: '运营实习生', date: '2025.01 - 2025.03',
             tagline: '直播电商 · 数据驱动运营',
             actions: [
               '数据驱动运营决策：搭建直播实时数据监控看板，核心追踪在线人数、ROI、转化率、商品点击率等6项核心指标；通过实时数据分析累计推动30+余次现场策略调整，单场直播GMV提升300.7%',
@@ -975,8 +1029,32 @@ createApp({
         },
         experience: {
           sectionTitle: 'Experience', title: 'Experience', subtitle: 'Hover for details · Baicizhan expands portfolio',
+          hikvision: {
+            num: '01 / 2026.07 - Present', company: 'HIKVISION', role: 'AI Product Manager Intern', date: '2026.07 - Present',
+            tagline: 'Multimodal AI · IoT Agent Platform · AI Voice Badge',
+            proj1: {
+              title: 'Project 1: Participated in Building an IoT Agent Platform',
+              bg: '<strong class="text-white/80">Project 1: Participated in Building an IoT Agent Platform</strong><br/><strong>Background:</strong> Worked across retail, security, food service, and pet-industry scenarios; defined data-labeling rules, wrote prompts to evaluate agents, debugged multimodal large models, and supported real customer deployments.',
+              result: '<strong class="text-[#CCFF00]">Results:</strong> Established labeling standards and a prompt-tuning SOP covering 3 major industries and 100+ edge cases; delivered reports on third-party model performance and scenario suitability.',
+              actions: [
+                'Analyzed requirements and boundary rules across security, retail, and food-service scenarios, and created labeling specifications with a hard-case sample library and consistency spot-check standards.',
+                'Evaluated 5 multimodal models using recognition rate, recall, F1-score, and inference latency; analyzed false positives and false negatives in depth, improving recognition accuracy in a target scenario from 82% to 89%.',
+                'Coordinated algorithm, engineering, and delivery teams to advance project implementation based on evaluation findings.'
+              ]
+            },
+            proj2: {
+              title: 'Project 2: Participated in 0-to-1 Delivery of an AI Voice Badge Product',
+              bg: '<strong class="text-white/80">Project 2: Participated in 0-to-1 Delivery of an AI Voice Badge Product</strong><br/><strong>Background:</strong> For offline service scenarios such as retail and food service, converted voice-badge recordings into structured business information through speech transcription and large-model analysis, supporting service quality inspection and business review.',
+              result: '<strong class="text-[#CCFF00]">Results:</strong> Standardized requirements from 10+ clients, recording samples, prompt templates, and evaluation metrics; produced recording-analysis performance reports to support product iteration.',
+              actions: [
+                'Conducted in-depth client interviews and requirement analysis, producing a 30+ page PRD covering 5 core functional modules and high-fidelity prototypes.',
+                'Built a 500+ item test set and evaluation system; conducted model A/B tests for transcription accuracy, information-extraction accuracy, result completeness, and response latency.',
+                'Analyzed transcription errors, omissions, and hallucinations; iterated prompts and structured-output templates, and collaborated with algorithm, engineering, and delivery teams to drive implementation.'
+              ]
+            }
+          },
           bzhan: {
-            num: '01 / 2026.02 - 2026.07', company: 'Baicizhan', role: 'Product Operations Intern', date: '2026.02 - 2026.07',
+            num: '02 / 2026.02 - 2026.07', company: 'Baicizhan', role: 'Product Operations Intern', date: '2026.02 - 2026.07',
             tagline: 'Million-DAU Ed-Tech · Gamified Social Rebuild',
             proj1: {
               title: 'Project 1: "Yiqibei" Social System Gamification Upgrade',
@@ -999,7 +1077,7 @@ createApp({
             compare: ['Hall Layer Rebuild', 'Character Interaction & Quiz', 'Logic Analysis & Activity Zones']
           },
           meituan: {
-            num: '02 / 2025.08 - 2025.11', company: 'Meituan - In-store Business Group', role: 'Product Intern (Growth)', date: '2025.08 - 2025.11',
+            num: '03 / 2025.08 - 2025.11', company: 'Meituan - In-store Business Group', role: 'Product Intern (Growth)', date: '2025.08 - 2025.11',
             tagline: 'In-store Business · "Booking + Group Buy" Integration',
             proj: {
               title: 'Project: "Booking Scenario Traffic Conversion Optimization — Booking + Group Buy Integration"',
@@ -1015,7 +1093,7 @@ createApp({
             }
           },
           jiaoyou: {
-            num: '03 / 2025.01 - 2025.03', company: 'Hangzhou Jiaoge Pengyou Tech', role: 'Operations Intern', date: '2025.01 - 2025.03',
+            num: '04 / 2025.01 - 2025.03', company: 'Hangzhou Jiaoge Pengyou Tech', role: 'Operations Intern', date: '2025.01 - 2025.03',
             tagline: 'Live-stream E-commerce · Data-driven Operations',
             actions: [
               'Data-driven Operations: Built a live-stream real-time data monitoring dashboard, tracking 6 core metrics (online users, ROI, conversion rate, product CTR, etc.); through real-time data analysis, pushed 30+ on-site strategy adjustments, single-stream GMV up 300.7%.',
