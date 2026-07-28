@@ -886,7 +886,7 @@ createApp({
     const toggleLang = () => {
       lang.value = lang.value === 'zh' ? 'en' : 'zh';
       document.documentElement.lang = lang.value === 'zh' ? 'zh-CN' : 'en';
-      document.title = lang.value === 'zh' ? '陈亚楠 | 产品运营' : 'Chen Yanan | Product Operations';
+      document.title = lang.value === 'zh' ? '陈亚楠 | 个人简历' : 'Chen Yanan | Resume';
     };
 
     const openPdfModal = () => { pdfModalOpen.value = true; document.body.style.overflow = 'hidden'; };
@@ -1182,7 +1182,7 @@ createApp({
 
     onMounted(() => {
       document.documentElement.lang = 'zh-CN';
-      document.title = lang.value === 'zh' ? '陈亚楠 | 产品运营' : 'Chen Yanan | Product Operations';
+      document.title = lang.value === 'zh' ? '陈亚楠 | 个人简历' : 'Chen Yanan | Resume';
       initCursor();
       initScrollSpy();
       initNavScroll();
