@@ -574,9 +574,14 @@
       <div class="reveal" ref="profileInfo">
         <div class="text-[#CCFF00] text-xs uppercase tracking-[0.3em] mb-4">{{ t('profile.subtitle') }}</div>
         <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">{{ t('profile.name') }}</h1>
-        <p class="text-white/50 text-base leading-relaxed max-w-lg mb-8">
-          {{ t('profile.desc') }}
-        </p>
+        <div class="text-white/50 text-base leading-relaxed max-w-lg mb-8">
+          <p
+            v-for="(paragraph, i) in t('profile.desc')"
+            :key="i"
+            :class="{ 'mt-3': i > 0 }"
+            style="text-indent: 2em;"
+          >{{ paragraph }}</p>
+        </div>
         <div class="flex flex-wrap gap-3 mb-2">
           <span class="glass px-4 py-1.5 text-sm text-white/60">{{ t('profile.tags.0') }}</span>
           <span class="glass px-4 py-1.5 text-sm text-white/60">{{ t('profile.tags.1') }}</span>
@@ -908,7 +913,10 @@ createApp({
         nav: { profile: 'Profile', education: 'Education', experience: 'Experience', skills: 'Skills' },
         profile: {
           subtitle: 'Product Operations', name: '陈亚楠',
-          desc: '现于海康威视担任AI产品经理实习生，参与IOT智能体平台搭建与AI工牌录音0-1落地，涵盖多模态模型评测、标注标准与Prompt调优SOP沉淀，推动特定场景识别率由82%提升至89%。此前，深入参与百万级DAU教育产品（百词斩）游戏化社交体系0-1重构，以及美团到店「预订+团购」场景打通项目，具备C端产品全链路体验设计与B端商家策略规划能力。熟练运用漏斗分析、A/B测试与AIGC工具，驱动留存、渗透率及GMV增长，兼具软硬件结合的产品落地经验与跨团队协同能力，擅长将业务洞察转化为可复用的产品策略。',
+          desc: [
+            '现于海康威视担任AI产品经理实习生，参与IOT智能体平台与AI工牌录音产品0-1落地，负责多模态模型评测、标注规范及Prompt调优SOP沉淀，推动特定场景识别率由82%提升至89%。',
+            '此前参与百万级DAU教育产品百词斩的游戏化社交体系0-1重构，以及美团到店「预订+团购」场景打通，具备C端体验设计、B端策略规划及软硬件产品落地经验。熟练运用漏斗分析、A/B测试与AIGC工具，擅长跨团队协同并将业务洞察沉淀为可复用策略。'
+          ],
           tags: ['立即到岗', '实习时长 >= 6个月', '中共党员', '双一流'],
           btnEmail: '1492665203@qq.com', btnPhone: '15536562212',
           card1: '双一流 · 硕士在读', card1sub: 'GPA 3.7 / 专业第1',
@@ -1012,7 +1020,10 @@ createApp({
         nav: { profile: 'Profile', education: 'Education', experience: 'Experience', skills: 'Skills' },
         profile: {
           subtitle: 'Product Operations', name: 'Chen Yanan',
-          desc: 'Currently an AI Product Manager Intern at HIKVISION, contributing to the development of an IoT agent platform and the 0-to-1 delivery of an AI voice badge product. Work includes multimodal model evaluation, labeling standards, and prompt-tuning SOP development, improving recognition accuracy in a target scenario from 82% to 89%. Previously contributed deeply to the 0-to-1 gamified social system rebuild for Baicizhan, a million-DAU education product, and Meituan In-store\'s "Booking + Group Buy" scenario integration, building experience in end-to-end C-end product experience design and B-end merchant strategy planning. Proficient in funnel analysis, A/B testing, and AIGC tools to drive retention, penetration, and GMV growth, with hands-on experience delivering integrated hardware-software products and collaborating across teams. Skilled at translating business insights into reusable product strategies.',
+          desc: [
+            'Currently an AI Product Manager Intern at HIKVISION, contributing to an IoT agent platform and the 0-to-1 delivery of an AI voice badge product. Responsible for multimodal model evaluation, labeling standards, and prompt-tuning SOPs, improving recognition accuracy in a target scenario from 82% to 89%.',
+            'Previously contributed to the 0-to-1 gamified social system rebuild for Baicizhan, a million-DAU education product, and Meituan In-store\'s "Booking + Group Buy" integration. Experienced in C-end experience design, B-end strategy planning, and integrated hardware-software delivery; proficient in funnel analysis, A/B testing, AIGC tools, and cross-functional collaboration.'
+          ],
           tags: ['Available Now', 'Internship >= 6 Months', 'CPC Member', 'Double First-Class'],
           btnEmail: '1492665203@qq.com', btnPhone: '15536562212',
           card1: 'Double First-Class · Master\'s', card1sub: 'GPA 3.7 / Rank #1',
