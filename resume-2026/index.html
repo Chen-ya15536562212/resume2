@@ -600,6 +600,22 @@
     html.desktop-mobile-layout .lang-toggle { display: flex; }
     html.desktop-mobile-layout .pdf-entry { font-size: 0.8rem; padding: 8px 16px; }
   }
+
+  /* iOS / 微信内置浏览器在 viewport 切换后可能不再命中上面的媒体查询。
+     这些规则直接跟随移动端标记，确保新版在真机上仍按预期显示。 */
+  html.desktop-mobile-layout { font-size: 17px; }
+  html.desktop-mobile-layout #profile {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  html.desktop-mobile-layout .top-nav {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  html.desktop-mobile-layout .top-nav-inner {
+    width: 90%;
+    max-width: none;
+  }
 </style>
 </head>
 <body>
